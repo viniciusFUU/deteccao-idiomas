@@ -68,3 +68,24 @@ def data_prepare_to_x_training():
         x_train.append(train_list)
 
     return x_train
+
+def data_prepare_to_y_training():
+    index_values = index_transformation()
+    token_values = tokenazing_words()
+
+    y_train = []
+
+    for value, values in token_values.items():
+        counter = 0
+        
+        for str, int in index_values.items():
+            if str in values:
+                counter+=1
+
+        if len(values) == counter:
+            y_train.append(value)  
+
+    return y_train
+
+
+print(data_prepare_to_y_training())
