@@ -3,8 +3,7 @@ import os
 import re
 from dotenv import load_dotenv
 
-
-def get_all_texts():
+def get_all_words():
     conn = mysql.connector.connect(
         host=os.getenv("HOST"),
         port=os.getenv("PORT"),
@@ -14,10 +13,19 @@ def get_all_texts():
     )
     cursor = conn.cursor()
     cursor.execute("SELECT texto, cod_idioma FROM texto")
+
+    dados = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return dados
+
+def tokenazing_words():
     texts = []
     words_by_language = {"pt":[], "en":[], "es":[]}
 
-    dados = cursor.fetchall()
+    dados = get_all_words()
 
     for texto, idioma in dados:
         texts.append({
@@ -30,10 +38,33 @@ def get_all_texts():
         idioma = item["cod_idioma"]
 
         words_by_language[idioma].extend(texto.split())
-
-    cursor.close()
-    conn.close()
     
     return words_by_language
 
-print(get_all_texts())
+def index_transformation():
+    values = tokenazing_words()
+    all_words = set()
+
+    for word_list in values.values(  ):
+        all_words.update(word_list)
+
+    vocabulary = {word: i for i, word in enumerate(sorted(all_words))}
+    return vocabulary
+
+def data_prepare_to_x_training():
+    index_values = index_transformation()
+    token_values = tokenazing_words()
+
+    x_train = []
+
+    for value in token_values.values():
+        train_list = []
+
+        for word in value:
+            for str, i in index_values.items():
+                if str == word:
+                    train_list.append(i)
+
+        x_train.append(train_list)
+
+    return x_train
