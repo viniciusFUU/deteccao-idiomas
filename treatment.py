@@ -55,15 +55,10 @@ def data_prepare_to_y_training():
 
     y_train = []
 
-    for value, values in token_values.items():
-        counter = 0
-        
-        for str, int in index_values.items():
-            if str in values:
-                counter+=1
-
-        if len(values) == counter:
-            y_train.append(value)  
+    for lang, words in token_values.items():
+        print(lang, words)
+        if all(word in index_values for word in words):
+            y_train.append(lang)
 
     return y_train
 
