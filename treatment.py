@@ -32,7 +32,7 @@ def indexing_words():
 
     return vocabulary
 
-def separing_for_groups_the_words():
+def x_train():
     index_values = indexing_words()
     organized_values = organized_words()
 
@@ -50,14 +50,13 @@ def separing_for_groups_the_words():
 
     return x_train
 
-def lang_position():
+def y_train():
     index_values = indexing_words()
     organized_values = organized_words()
 
     y_train = []
 
     for lang, words in organized_values.items():
-        print(lang, words)
         if all(word in index_values for word in words):
             y_train.append(lang)
 
