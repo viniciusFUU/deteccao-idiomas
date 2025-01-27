@@ -1,7 +1,7 @@
 import connection
 import re
 
-def tokenazing_words():
+def organized_words():
     texts = []
     words_by_language = {"pt":[], "en":[], "es":[]}
 
@@ -10,7 +10,7 @@ def tokenazing_words():
     for texto, idioma in dados:
         texts.append({
             "cod_idioma": idioma.lower(),
-            "texto": re.sub(r'[^a-zA-Z\s]', '', texto)
+            "texto": re.sub(r'[^\w\s]', '', texto.lower())
             })
         
     for item in texts:
@@ -21,23 +21,24 @@ def tokenazing_words():
     
     return words_by_language
 
-def index_transformation():
-    values = tokenazing_words()
+def indexing_words():
+    values = organized_words()
     all_words = set()
 
-    for word_list in values.values(  ):
+    for word_list in values.values():
         all_words.update(word_list)
 
     vocabulary = {word: i for i, word in enumerate(sorted(all_words))}
+
     return vocabulary
 
-def data_prepare_to_x_training():
-    index_values = index_transformation()
-    token_values = tokenazing_words()
+def separing_for_groups_the_words():
+    index_values = indexing_words()
+    organized_values = organized_words()
 
     x_train = []
 
-    for value in token_values.values():
+    for value in organized_values.values():
         train_list = []
 
         for word in value:
@@ -49,17 +50,35 @@ def data_prepare_to_x_training():
 
     return x_train
 
-def data_prepare_to_y_training():
-    index_values = index_transformation()
-    token_values = tokenazing_words()
+def lang_position():
+    index_values = indexing_words()
+    organized_values = organized_words()
 
     y_train = []
 
-    for lang, words in token_values.items():
+    for lang, words in organized_values.items():
         print(lang, words)
         if all(word in index_values for word in words):
             y_train.append(lang)
 
     return y_train
 
-print(data_prepare_to_y_training())
+def definition_of_priority(text):
+    text_joined = text.lower().split()
+    count_definitition = 0
+    idioma = ""
+
+    organized_word = organized_words()
+
+    for lang, words in organized_word.items():
+        counter = 0
+
+        for word in words:
+            if word in text_joined:
+                counter+=1
+            
+        if counter > count_definitition:
+            count_definitition = counter
+            idioma = lang
+
+    return idioma
