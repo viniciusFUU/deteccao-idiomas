@@ -33,4 +33,24 @@ def words_probabillity():
 
     return words_probability_list
 
-print(words_probabillity())
+def nav_bayles(text):
+    L_probabillity = langs_probabillity()
+    W_probabillity = words_probabillity()
+    lang_scores = {}
+    
+    total_word_probability = sum(W_probabillity[lang].get(text, 0) for lang in W_probabillity)
+
+    if total_word_probability == 0:
+        return f"A palavra '{text}' não foi encontrada no vocabulário treinado."
+
+    for lang, lang_prob in L_probabillity.items():
+        if text in W_probabillity.get(lang, {}):
+            word_prob = W_probabillity[lang][text]
+            lang_scores[lang] = (word_prob * lang_prob) / total_word_probability
+
+    if lang_scores:
+        best_lang = max(lang_scores, key=lang_scores.get)
+        best_prob = round(lang_scores[best_lang] * 100, 2)
+        return f"A palavra '{text}' é do idioma '{best_lang}'."
+    else:
+        return f"A palavra '{text}' não foi encontrada em nenhum idioma."
