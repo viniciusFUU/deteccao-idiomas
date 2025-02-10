@@ -3,11 +3,17 @@ import re
 
 def organized_words():
     texts = []
-    words_by_language = {"pt":[], "en":[], "es":[]}
+    words_by_language = {}
 
-    dados = connection.get_all_words()
+    words = connection.get_all_words()
+    langs = connection.get_all_langs()
 
-    for texto, idioma in dados:
+    for lang in langs:
+        for l in lang:
+            ling = l.lower()
+            words_by_language[ling] = []
+
+    for texto, idioma in words:
         texts.append({
             "cod_idioma": idioma.lower(),
             "texto": re.sub(r'[^\w\s]', '', texto.lower())
@@ -53,6 +59,7 @@ def x_train():
 def y_train():
     index_values = indexing_words()
     organized_values = organized_words()
+    print(organized_values)
 
     y_train = []
 
