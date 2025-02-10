@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def get_all_words():
     conn = mysql.connector.connect(
         host=os.getenv("HOST"),
